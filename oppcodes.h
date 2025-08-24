@@ -13,3 +13,6 @@ typedef enum InstructionSet {
     NOT_EQUAL_ZERO = 197, 
     GREATER_EQUAL_THEN_ZERO = 198,
     GREATER_THEN_ZERO = 199} InstructionSet;
+
+    #define COPY_MODE 128
+    #define IMMEDIATE_MODE 0
