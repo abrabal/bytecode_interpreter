@@ -1,12 +1,12 @@
 #include "vm.h"
-#include "oppcodes.h"
+#include "opcodes.h"
 #include <stdio.h>
 
 int is_mode(int instruction, int mode);
 
 SimStep step(SimStep sim_step)
 {
-    int instruction = sim_step.state->program->prog_body[sim_step.state->program->instruction_pointer];
+    int instruction = sim_step.state->program[sim_step.instruction_pointer];
     int source;
     int dest;
 
@@ -36,55 +36,55 @@ SimStep step(SimStep sim_step)
             break;
 
 
-        case NEVER:
-            sim_step.state->program->instruction_pointer += 1;
+        case NOP:
+            sim_step.instruction_pointer += 1;
             return sim_step;
             break;
 
-        case EQUAL_ZERO:
+        case JZ:
             if (sim_step.state->registers[3] == 0){
-                sim_step.state->program->instruction_pointer = sim_step.state->registers[0];
-                step(sim_step);
+                sim_step.instruction_pointer = sim_step.state->registers[0];
+                return sim_step;
             }
             break;
 
-        case LESS_THEN_ZERO:
+        case JLZ:
             if (sim_step.state->registers[3] < 0){
-                sim_step.state->program->instruction_pointer = sim_step.state->registers[0];
-                step(sim_step);
+                sim_step.instruction_pointer = sim_step.state->registers[0];
+                return sim_step;
             }
             break;
 
-        case LESS_EQUAL_ZERO:
+        case JLEZ:
             if (sim_step.state->registers[3] <= 0){
-                sim_step.state->program->instruction_pointer = sim_step.state->registers[0];
-                step(sim_step);
+                sim_step.instruction_pointer = sim_step.state->registers[0];
+                return sim_step;
             }
             break;
 
-        case ALWAYS:
-            sim_step.state->program->instruction_pointer = sim_step.state->registers[0];
-            step(sim_step);
+        case JUMP:
+            sim_step.instruction_pointer = sim_step.state->registers[0];
+            return sim_step;
             break;
 
-        case NOT_EQUAL_ZERO:
+        case JNZ:
             if (sim_step.state->registers[3] != 0){
-                sim_step.state->program->instruction_pointer = sim_step.state->registers[0];
-                step(sim_step);
+                sim_step.instruction_pointer = sim_step.state->registers[0];
+                return sim_step;
             }
             break;
 
-        case GREATER_EQUAL_THEN_ZERO:
+        case JGEZ:
             if (sim_step.state->registers[3] >= 0){
-                sim_step.state->program->instruction_pointer = sim_step.state->registers[0];
-                step(sim_step);
+                sim_step.instruction_pointer = sim_step.state->registers[0];
+                return sim_step;
             }
             break;
 
-        case GREATER_THEN_ZERO:
+        case JGZ:
             if (sim_step.state->registers[3] > 0){
-                sim_step.state->program->instruction_pointer = sim_step.state->registers[0];
-                step(sim_step);
+                sim_step.instruction_pointer = sim_step.state->registers[0];
+                return sim_step;
             }
             break;
     }
@@ -97,7 +97,7 @@ SimStep step(SimStep sim_step)
         sim_step.state->registers[0] = instruction;
     }
 
-    sim_step.state->program->instruction_pointer += 1;
+    sim_step.instruction_pointer += 1;
     return sim_step;
 }
 
