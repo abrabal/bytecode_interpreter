@@ -4,5 +4,5 @@
 #include "vm.h"
 
 
-SimStep clear_program(SimStep);
+SimStep clear_state(SimStep);
 void sim_log(SimStep);

@@ -4,6 +4,7 @@
 #include "vm.h"
 #include "third_party/unity/unity.h"
 #include "helpers.h"
+#include "errors.h"
 
 static unsigned char program[MAX_PROGRAM_LENGTH] = {0}; 
 static char input[MAX_SIZE_OF_INPUT_OUTPUT] = {0};
@@ -11,7 +12,7 @@ static char output[MAX_SIZE_OF_INPUT_OUTPUT] = {0};
 static char regs_arr[MAX_NUM_OF_REGISTERS] = {0};
     
 State state = {program, regs_arr};
-SimStep sim_step = {&state, 0, 0, 0, input, output};
+SimStep sim_step = {&state, 0, 0, 0, input, output, 0};
 
 void setUp(void)
 {
@@ -25,7 +26,7 @@ void tearDown(void)
 
 void test_immediate_instruction_1(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(25);
     TEST_ASSERT_EQUAL_MESSAGE(25, step(sim_step).state->registers[0], "IMMEDIATE test failed");
@@ -33,7 +34,7 @@ void test_immediate_instruction_1(void)
 
 void test_immediate_instruction_2(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(15);
     TEST_ASSERT_EQUAL_MESSAGE(15, step(sim_step).state->registers[0], "IMMEDIATE test failed");
@@ -41,7 +42,7 @@ void test_immediate_instruction_2(void)
 
 void test_immediate_instruction_3(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(63);
     TEST_ASSERT_EQUAL_MESSAGE(63, step(sim_step).state->registers[0], "IMMEDIATE test failed");
@@ -49,7 +50,7 @@ void test_immediate_instruction_3(void)
 
 void test_copy_instruction_1(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -60,7 +61,7 @@ void test_copy_instruction_1(void)
 
 void test_copy_instruction_2(void)
 {   
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 2);
@@ -71,7 +72,7 @@ void test_copy_instruction_2(void)
 
 void test_copy_instruction_3(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 3);
@@ -82,7 +83,7 @@ void test_copy_instruction_3(void)
 
 void test_copy_instruction_4(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 4);
@@ -93,7 +94,7 @@ void test_copy_instruction_4(void)
 
 void test_copy_instruction_5(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 5);
@@ -102,9 +103,47 @@ void test_copy_instruction_5(void)
     TEST_ASSERT_EQUAL_MESSAGE(10, step(sim_step).state->registers[5], "copy from reg0 to reg5 failed");
 }
 
+void test_copy_instruction_6(void)
+{
+    sim_step = clear_state(sim_step);
+    sim_step.inp_pointer = 0;
+
+    program[0] = IMMEDIATE(10);
+    program[1] = MOV(0, OUTPUT);
+
+    sim_step = step(sim_step);
+    TEST_ASSERT_EQUAL_MESSAGE(10, step(sim_step).output[sim_step.out_pointer], "copy from reg0 to reg5 failed");
+}
+
+void test_copy_instruction_7(void)
+{
+    sim_step = clear_state(sim_step);
+    sim_step.inp_pointer = 0;
+
+    sim_step.input[0] = 33;
+    program[0] = IMMEDIATE(10);
+    program[1] = MOV(INPUT, 0);
+
+    sim_step = step(sim_step);
+    TEST_ASSERT_EQUAL_MESSAGE(33, step(sim_step).state->registers[0], "copy from reg0 to reg5 failed");
+}
+
+void test_copy_instruction_8(void)
+{
+    sim_step = clear_state(sim_step);
+    sim_step.inp_pointer = 0;
+
+    sim_step.input[0] = 33;
+    program[0] = IMMEDIATE(10);
+    program[1] = MOV(INPUT, OUTPUT);
+
+    sim_step = step(sim_step);
+    TEST_ASSERT_EQUAL_MESSAGE(33, step(sim_step).output[sim_step.out_pointer], "copy from reg0 to reg5 failed");
+}
+
 void test_or_instruction(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(5);
     program[1] = MOV(0, 1);
@@ -122,7 +161,7 @@ void test_or_instruction(void)
 
 void test_nand_instruction(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(5);
     program[1] = MOV(0, 1);
@@ -139,7 +178,7 @@ void test_nand_instruction(void)
 
 void test_nor_instruction(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(5);
     program[1] = MOV(0, 1);
@@ -156,7 +195,7 @@ void test_nor_instruction(void)
 
 void test_and_instruction(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(5);
     program[1] = MOV(0, 1);
@@ -172,7 +211,7 @@ void test_and_instruction(void)
 
 void test_add_instruction(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(5);
     program[1] = MOV(0, 1);
@@ -189,7 +228,7 @@ void test_add_instruction(void)
 
 void test_sub_instruction(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(5);
     program[1] = MOV(0, 1);
@@ -206,7 +245,7 @@ void test_sub_instruction(void)
 
 void test_nop_instruction(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -223,7 +262,7 @@ void test_nop_instruction(void)
 
 void test_jz_instruction_1(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -241,7 +280,7 @@ void test_jz_instruction_1(void)
 
 void test_jz_instruction_2(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -259,7 +298,7 @@ void test_jz_instruction_2(void)
 
 void test_jlz_instruction_1(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -278,7 +317,7 @@ void test_jlz_instruction_1(void)
 
 void test_jlz_instruction_2(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -297,7 +336,7 @@ void test_jlz_instruction_2(void)
 
 void test_jlez_instruction_1(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -317,7 +356,7 @@ void test_jlez_instruction_1(void)
 
 void test_jlez_instruction_2(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -337,7 +376,7 @@ void test_jlez_instruction_2(void)
 
 void test_jlez_instruction_3(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -356,7 +395,7 @@ void test_jlez_instruction_3(void)
 
 void test_jump_instruction(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -373,7 +412,7 @@ void test_jump_instruction(void)
 
 void test_jnz_instruction_1(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -392,7 +431,7 @@ void test_jnz_instruction_1(void)
 
 void test_jnz_instruction_2(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -410,7 +449,7 @@ void test_jnz_instruction_2(void)
 
 void test_jgez_instruction_1(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -430,7 +469,7 @@ void test_jgez_instruction_1(void)
 
 void test_jgez_instruction_2(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -450,7 +489,7 @@ void test_jgez_instruction_2(void)
 
 void test_jgez_instruction_3(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -469,7 +508,7 @@ void test_jgez_instruction_3(void)
 
 void test_jgz_instruction_1(void) 
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -489,7 +528,7 @@ void test_jgz_instruction_1(void)
 
 void test_jgz_instruction_2(void)
 {
-    sim_step = clear_program(sim_step);
+    sim_step = clear_state(sim_step);
 
     program[0] = IMMEDIATE(10);
     program[1] = MOV(0, 1);
@@ -506,6 +545,24 @@ void test_jgz_instruction_2(void)
     TEST_ASSERT_EQUAL_MESSAGE(0, step(sim_step).state->registers[0], "JGZ test failed");
 }
 
+void test_error_invalid_instruction(void)
+{
+    sim_step = clear_state(sim_step);
+
+    program[0] = 70;
+
+    TEST_ASSERT_EQUAL_MESSAGE(ERROR_INVALID_INSTRUCTION, step(sim_step).error_code, "ERROR_INVALID_INSTRUCTION test failed");
+}
+
+void test_error_out_of_range(void)
+{
+    sim_step = clear_state(sim_step);
+
+    program[0] = 191;
+
+    TEST_ASSERT_EQUAL_MESSAGE(ERROR_INVALID_REGISTER, step(sim_step).error_code, "ERROR_OUT_OF_RANGE test failed");
+}
+
 int main()
 {
     UNITY_BEGIN();
@@ -517,6 +574,9 @@ int main()
     RUN_TEST(test_copy_instruction_3);
     RUN_TEST(test_copy_instruction_4);
     RUN_TEST(test_copy_instruction_5);
+    RUN_TEST(test_copy_instruction_6);
+    RUN_TEST(test_copy_instruction_7);
+    RUN_TEST(test_copy_instruction_8);
     RUN_TEST(test_or_instruction);
     RUN_TEST(test_nand_instruction);
     RUN_TEST(test_nor_instruction);
@@ -539,6 +599,8 @@ int main()
     RUN_TEST(test_jgez_instruction_3);
     RUN_TEST(test_jgz_instruction_1);
     RUN_TEST(test_jgz_instruction_2);
+    RUN_TEST(test_error_invalid_instruction);
+    RUN_TEST(test_error_out_of_range);
     return UNITY_END();
 }
 
@@ -572,7 +634,7 @@ void sim_log(SimStep sim_step){
     printf("\n\n");
 }
 
-SimStep clear_program(SimStep sim_step)
+SimStep clear_state(SimStep sim_step)
 {
     for (int i = 0; i < MAX_PROGRAM_LENGTH; i++){
         sim_step.state->program[i] = 0;
