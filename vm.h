@@ -26,7 +26,7 @@ typedef struct SimStep {
 } SimStep;
 
 
-SimStep step(SimStep);
-SimStep deep_copy(SimStep);
+SimStep step(SimStep sim_step, SimStep next_step);
+SimStep deep_copy(SimStep dest, SimStep source);
 SimStep make_clear_step();
 void free_step(SimStep sim_step);

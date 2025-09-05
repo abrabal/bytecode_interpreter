@@ -7,114 +7,98 @@
 
 int is_mode(int instruction, int mode);
 
-SimStep step(SimStep sim_step)
+SimStep step(SimStep sim_step, SimStep next_step)
 {
     int instruction = sim_step.state->program[sim_step.instruction_pointer];
     int source;
     int dest;
-    SimStep next_step = deep_copy(sim_step);
     next_step.instruction_pointer += 1;
 
 
     switch(instruction){
         case ADD:
             next_step.state->registers[3] = sim_step.state->registers[1] + sim_step.state->registers[2];
-            free_step(sim_step);
             return next_step;
 
         case OR:
             next_step.state->registers[3] = sim_step.state->registers[1] | sim_step.state->registers[2];
-            free_step(sim_step);
             return next_step;
 
         case NAND:
             next_step.state->registers[3] = ~(sim_step.state->registers[1] & sim_step.state->registers[2]);
-            free_step(sim_step);
             return next_step;
 
         case NOR:
             next_step.state->registers[3] = ~(sim_step.state->registers[1] | sim_step.state->registers[2]);
-            free_step(sim_step);
             return next_step;
 
         case AND:
             next_step.state->registers[3] = sim_step.state->registers[1] & sim_step.state->registers[2];
-            free_step(sim_step);
             return next_step;
 
         case SUB:
             next_step.state->registers[3] = sim_step.state->registers[1] - sim_step.state->registers[2];
-            free_step(sim_step);
             return next_step;
 
 
         case NOP:
-            free_step(sim_step);
             return next_step;
 
         case JZ:
             if (next_step.state->registers[3] == 0){
                 next_step.instruction_pointer = sim_step.state->registers[0];
-                free_step(sim_step);
+
                 return next_step;
             }
-            free_step(sim_step);
             return next_step;
 
         case JLZ:
             if (next_step.state->registers[3] < 0){
                 next_step.instruction_pointer = sim_step.state->registers[0];
-                free_step(sim_step);
+
                 return next_step;
             }
-            free_step(sim_step);
             return next_step;
 
         case JLEZ:
             if (next_step.state->registers[3] <= 0){
                 next_step.instruction_pointer = sim_step.state->registers[0];
-                free_step(sim_step);
+
                 return next_step;
             }
-            free_step(sim_step);
             return next_step;
 
         case JUMP:
             next_step.instruction_pointer = sim_step.state->registers[0];
-            free_step(sim_step);
             return next_step;
 
         case JNZ:
             if (next_step.state->registers[3] != 0){
                 next_step.instruction_pointer = sim_step.state->registers[0];
-                free_step(sim_step);
+
                 return next_step;
             }
-            free_step(sim_step);
             return next_step;
 
         case JGEZ:
             if (next_step.state->registers[3] >= 0){
                 next_step.instruction_pointer = sim_step.state->registers[0];
-                free_step(sim_step);
+
                 return next_step;
             }
-            free_step(sim_step);
             return next_step;
 
         case JGZ:
             if (next_step.state->registers[3] > 0){
                 next_step.instruction_pointer = sim_step.state->registers[0];
-                free_step(sim_step);
+
                 return next_step;
             }
-            free_step(sim_step);
             return next_step;
     }
 
     if(instruction < COPY_MODE && instruction > 63){
         next_step.error_code = error(ERROR_INVALID_INSTRUCTION, 0, 0, instruction);
-        free_step(sim_step);
         return next_step;
     }
 
@@ -124,42 +108,35 @@ SimStep step(SimStep sim_step)
 
         if (source < MAX_NUM_OF_REGISTERS && dest < MAX_NUM_OF_REGISTERS){
             next_step.state->registers[dest] = sim_step.state->registers[source];
-            free_step(sim_step);
             return next_step;
         }
         if (source == INPUT && dest == OUTPUT){
             next_step.output[sim_step.out_pointer] = sim_step.input[sim_step.inp_pointer];
             next_step.inp_pointer += 1;
-            free_step(sim_step);
             return next_step;
         }
         if (source == INPUT && dest < MAX_NUM_OF_REGISTERS){
             next_step.state->registers[dest] = sim_step.input[sim_step.inp_pointer];
             next_step.inp_pointer += 1;
-            free_step(sim_step);
             return next_step;
         }
         if (source < MAX_NUM_OF_REGISTERS && dest == OUTPUT){
             next_step.output[sim_step.out_pointer] = sim_step.state->registers[source];
-            free_step(sim_step);
             return next_step;
         }
 
         next_step.error_code = error(ERROR_INVALID_REGISTER, source, dest, 0);
-        free_step(sim_step);
         return next_step;
         
 
     } else if (is_mode(instruction, IMMEDIATE_MODE)){
         next_step.state->registers[0] = instruction;
-        free_step(sim_step);
         return next_step;
     }
 
     
 
     next_step.error_code = UNEXPECTED_BEHAVIOR;
-    free_step(sim_step);
     return next_step;
 }
 
@@ -168,21 +145,19 @@ int is_mode(int instruction, int mode)
     return ((instruction >> 6) ^ (mode >> 6)) == 0;
 }
 
-SimStep deep_copy(SimStep sim_step)
+SimStep deep_copy(SimStep copy_dest, SimStep copy_source)
 {
-    SimStep new_sim_step = make_clear_step(sim_step);
+    memcpy(copy_dest.state->program, copy_source.state->program, MAX_PROGRAM_LENGTH * sizeof(unsigned char));
+    memcpy(copy_dest.input, copy_source.input, MAX_SIZE_OF_INPUT_OUTPUT * sizeof(char));
+    memcpy(copy_dest.output, copy_source.output, MAX_SIZE_OF_INPUT_OUTPUT * sizeof(char));
+    memcpy(copy_dest.state->registers, copy_source.state->registers, MAX_NUM_OF_REGISTERS * sizeof(char));
 
-    memcpy(new_sim_step.state->program, sim_step.state->program, MAX_PROGRAM_LENGTH * sizeof(unsigned char));
-    memcpy(new_sim_step.input, sim_step.input, MAX_SIZE_OF_INPUT_OUTPUT * sizeof(char));
-    memcpy(new_sim_step.output, sim_step.output, MAX_SIZE_OF_INPUT_OUTPUT * sizeof(char));
-    memcpy(new_sim_step.state->registers, sim_step.state->registers, MAX_NUM_OF_REGISTERS * sizeof(char));
+    copy_dest.inp_pointer = copy_source.inp_pointer;
+    copy_dest.out_pointer = copy_source.out_pointer;
+    copy_dest.instruction_pointer = copy_source.instruction_pointer;
+    copy_dest.error_code = copy_source.error_code;
 
-    new_sim_step.inp_pointer = sim_step.inp_pointer;
-    new_sim_step.out_pointer = sim_step.out_pointer;
-    new_sim_step.instruction_pointer = sim_step.instruction_pointer;
-    new_sim_step.error_code = sim_step.error_code;
-
-    return new_sim_step;
+    return copy_dest;
 }
 
 SimStep make_clear_step()
@@ -201,16 +176,16 @@ SimStep make_clear_step()
     new_clear_state->program = program;
     new_clear_state->registers = regs_arr;
 
-    SimStep new_clear_sim_step = {new_clear_state, 0, 0, 0, input, output, 0};
+    SimStep new_clear_copy_source = {new_clear_state, 0, 0, 0, input, output, 0};
 
-    return new_clear_sim_step;
+    return new_clear_copy_source;
 }
 
-void free_step(SimStep sim_step)
+void free_step(SimStep copy_source)
 {
-    free(sim_step.state->program);
-    free(sim_step.state->registers);
-    free(sim_step.input);
-    free(sim_step.output);
-    free(sim_step.state);
+    free(copy_source.state->program);
+    free(copy_source.state->registers);
+    free(copy_source.input);
+    free(copy_source.output);
+    free(copy_source.state);
 }

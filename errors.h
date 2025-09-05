@@ -14,9 +14,6 @@ typedef enum ErrorCodes
 
 } ErrorCodes;
 
-static inline int error(int error, int source, int dest, int instruction);
-
-
 static inline int error(int error, int source, int dest, int instruction)
 {
     if (error == ERROR_INVALID_REGISTER){
