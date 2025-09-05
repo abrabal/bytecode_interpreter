@@ -1,5 +1,4 @@
-#ifndef HELPERS
-#define HELPERS
+#pragma once
 
 #include <stdio.h>
 #include "vm.h"
@@ -37,4 +36,3 @@ void sim_log(SimStep sim_step){
     printf("instruction pointer = %d", sim_step.instruction_pointer);
     printf("\n\n");
 }
-#endif

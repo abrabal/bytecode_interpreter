@@ -1,5 +1,4 @@
-#ifndef ERROR
-#define ERROR
+#pragma once
 
 #include <stdio.h>
 #include "vm.h"
@@ -36,4 +35,3 @@ static inline int error(int error, int source, int dest, int instruction)
         return ERROR_INVALID_INSTRUCTION;
     }
 }
-#endif
