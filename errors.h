@@ -34,4 +34,6 @@ static inline int error(int error, int source, int dest, int instruction)
         #endif
         return ERROR_INVALID_INSTRUCTION;
     }
+
+    return UNEXPECTED_BEHAVIOR;
 }

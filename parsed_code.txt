@@ -1,0 +1,10 @@
+instruction = 64
+instruction = 134
+
+instruction = 67
+instruction = 68
+instruction = 20
+
+instruction = 62
+
+number of instructions = 6
