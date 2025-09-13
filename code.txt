@@ -1,0 +1,14 @@
+or;
+/*comment
+
+some text
+
+*/
+nor + add;
+and | or;
+//line comment
+add;
+immediate + 20;
+
+immediate + 62;
+//comment 

@@ -18,7 +18,13 @@ typedef enum InstructionSet
     JGZ = 199 //JUMP_GREATER_ZERO
 } InstructionSet;
 
-    #define COPY_MODE 128
-    #define IMMEDIATE_MODE 0
-    #define IMMEDIATE(const) (IMMEDIATE_MODE + const)
-    #define MOV(source, dest) (((source << 3) + (dest)) | 128)
+#define COPY_MODE 128
+#define IMMEDIATE_MODE 0
+#define IMMEDIATE(const) (IMMEDIATE_MODE + const)
+#define MOV(source, dest) (((source << 3) + (dest)) | 128)
+
+typedef struct Opcode {
+    char *name;
+    int value;
+
+} Opcode;
