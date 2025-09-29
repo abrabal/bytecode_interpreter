@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <string.h>
-#include "../opcodes.h"
-#include "../vm.h"
-#include "../third_party/unity/unity.h"
-#include "../helpers.h"
-#include "../errors.h"
+#include "opcodes.h"
+#include "vm.h"
+#include "third_party/unity/unity.h"
+#include "helpers.h"
+#include "errors.h"
 
 void setUp(void)
 {

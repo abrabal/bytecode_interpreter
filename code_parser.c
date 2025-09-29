@@ -29,15 +29,12 @@ static Opcode opcodes_for_parser[] =
     {"sub", 0x45}
 };
 
-static char buf[BUFSIZE];
-static int bufp = 0;
 static int instruction_stack[20];
 static int instruction_stack_pointer = 0;
 static Label *hashtab[HASHTAB_SIZE];
 
-void compile_program(unsigned char *program, char *source_code_file, int max_program_size)
+void compile_program(unsigned char *program, FILE *source_code, int max_program_size)
 {
-    FILE *source_code = fopen(source_code_file, "r");
     char token_name[MAX_TOKEN_NAME];
     int instruction_counter = 0;
     char operation_flag = 0;
@@ -128,12 +125,10 @@ void compile_program(unsigned char *program, char *source_code_file, int max_pro
             exit(1);
         }
     }
-    printf("number of instructions = %d\n", instruction_counter);
 
     for (int i = 0; i < HASHTAB_SIZE; i++){
         free_list(hashtab[i]);
     }
-    fclose(source_code);
 }
 
 int get_token(char *token_name, FILE *source_code)
@@ -159,9 +154,6 @@ int get_token(char *token_name, FILE *source_code)
     }
 
     token_name = '\0';
-    if (c != ';'){
-        ungetch(c);
-    }
 
     if(!isspace(c) && c != ';' && c != EOF && !(is_operator(c))){
         fprintf(stderr, "FORMAT ERROR: unexpected token '%c'\n", c);
@@ -226,16 +218,6 @@ int is_operator(int c)
     }
     
     return 0;
-}
-
-int fgetch(FILE *source_code)
-{
-    return (bufp > 0) ? buf[--bufp] : fgetc(source_code);
-}
-
-void ungetch(int c)
-{
-        buf[bufp++] = c;
 }
 
 void push(int instruction){
