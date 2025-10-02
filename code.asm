@@ -1,22 +1,6 @@
-or+2;
-/*comment
-
-some text
-
-*/ //i am comment
-nor + add;//error
-and|or;
-label jump;
-//line comment
+immediate + 5;
+cp_from_reg0 + 1;
+immediate + 15;
+cp_from_reg0 + 2;
 add;
-immediate + 20;
-
-jump;
-immediate+ 62;//also commenter
-
-50 -25; //and comment
-label jump_jump;
-
-10 * 2; /* commmmmment*/
-//comment
-jump_jump;
+cp_from_reg3 + 6;

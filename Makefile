@@ -1,10 +1,11 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 -g -fsanitize=address -I../bytecode_interpreter -Ithird_party/unity
 
-TARGETS = bin/test_vm.elf bin/dump_program.elf
+TARGETS = bin/test_vm.elf bin/dump_program.elf bin/run_sim.elf
 
 SRCS_VM = test/test_vm.c vm.c third_party/unity/unity.c
 SRCS_PARS = code_parser.c utilities/dump_program.c vm.c
+SRCS_RUN = code_parser.c vm.c run_sim.c
 
 all: $(TARGETS)
 
@@ -12,6 +13,9 @@ bin/test_vm.elf: $(SRCS_VM)
 	$(CC) $(CFLAGS) $^ -o $@
 
 bin/dump_program.elf: $(SRCS_PARS)
+	$(CC) $(CFLAGS) $^ -o $@
+
+bin/run_sim.elf: $(SRCS_RUN)
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean:

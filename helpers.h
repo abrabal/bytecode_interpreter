@@ -3,36 +3,28 @@
 #include <stdio.h>
 #include "vm.h"
 
+typedef enum LogCodes
+{
+    NO_LOGS = 0,
+    INFO = 1,
+    DEBUG = 2
+} LogCodes;
 
-void sim_log(SimStep);
+static inline void sim_log(SimStep *sim_step, FILE *log_output, int log_flag){
 
+    if (log_output == NULL){
+        log_output = stderr;
+    }
 
-void sim_log(SimStep sim_step){
+    if (log_flag == DEBUG){
+        fprintf(log_output, "\n==================================================================");
+        fprintf(log_output, "\ninstruction: <%d>", sim_step->state->program[sim_step->instruction_pointer]);
+        fprintf(log_output, "\nregisters: <%d> <%d> <%d> <%d> <%d> <%d>", sim_step->state->registers[0], sim_step->state->registers[1], sim_step->state->registers[2], sim_step->state->registers[3], sim_step->state->registers[4], sim_step->state->registers[5]);
+        fprintf(log_output, "\ninput: <%d>", sim_step->input[sim_step->inp_pointer]);
+        fprintf(log_output, "\noutput: <%d>", sim_step->output[sim_step->out_pointer]);
+    }
 
-    printf("\nSIM_LAYOUT:\n\n");
-    printf("sim_step.state->program:\n");
-    for (int i = 0; i < MAX_PROGRAM_LENGTH; i++){
-        printf("%u ", sim_step.state->program[i]);
+    if (log_flag == INFO){
+        fprintf(log_output, "\noutput: <%d>", sim_step->output[sim_step->out_pointer]);
     }
-    printf("\n\n");
-    printf("registers:\n\n");
-    for (int i = 0; i < MAX_NUM_OF_REGISTERS; i++){
-        printf("reg %d:\nvalue = %d\n", i, sim_step.state->registers[i]);
-        printf("\n");
-    }
-    printf("I/O:\n\n");
-    printf("input step: %lu\n", sim_step.inp_pointer);
-    printf("inputs arr:\n");
-    for(int i = 0; i < MAX_SIZE_OF_INPUT_OUTPUT; i++){
-        printf("%d ", sim_step.input[i]);
-    }
-    printf("\n\n");
-    printf("output step: %lu\n", sim_step.out_pointer);
-    printf("outputs arr:\n");
-    for(int i = 0; i < MAX_SIZE_OF_INPUT_OUTPUT; i++){
-        printf("%d ", sim_step.output[i]);
-    }
-    printf("\n\n");
-    printf("instruction pointer = %d", sim_step.instruction_pointer);
-    printf("\n\n");
 }

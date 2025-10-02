@@ -10,7 +10,7 @@
 
 #define NUM_OF_OPCODES sizeof(opcodes_for_parser)/sizeof(Opcode)
 
-static Opcode opcodes_for_parser[] =
+/*static Opcode opcodes_for_parser[] =
 {
     {"add", 0x44},
     {"and", 0x43},
@@ -27,6 +27,31 @@ static Opcode opcodes_for_parser[] =
     {"nor", 0x42},
     {"or", 0x40},
     {"sub", 0x45}
+};*/
+
+Opcode opcodes_for_parser[] =
+{
+    {"add", 68},
+    {"and", 67},
+    {"cp_from_reg0", 128},
+    {"cp_from_reg1", 136},
+    {"cp_from_reg2", 144},
+    {"cp_from_reg3", 152},
+    {"cp_from_reg4", 160},
+    {"cp_from_reg5", 168},
+    {"immediate", 0},
+    {"jgez", 192},
+    {"jgz", 199},
+    {"jlez", 195},
+    {"jlz", 194},
+    {"jnz", 197},
+    {"jump", 196},
+    {"jz", 193},
+    {"nand", 65},
+    {"nop", 192},
+    {"nor", 66},
+    {"or", 64},
+    {"sub", 69}
 };
 
 static int instruction_stack[20];
@@ -245,7 +270,7 @@ int compare_opcodes(const void *p1, const void *p2)
 
 int hash (char *str)
 {
-    int hashval = 0;
+    unsigned int hashval = 0;
 
     for (; *str != '\0'; str++){
         hashval = *str + 31 * hashval;

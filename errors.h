@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "vm.h"
 
-#define MUTE_ERRORS
+//#define MUTE_ERRORS
 
 typedef enum ErrorCodes 
 {
