@@ -10,48 +10,30 @@
 
 #define NUM_OF_OPCODES sizeof(opcodes_for_parser)/sizeof(Opcode)
 
-/*static Opcode opcodes_for_parser[] =
+Opcode opcodes_for_parser[] =
 {
     {"add", 0x44},
     {"and", 0x43},
-    {"immediate", 0x00},
-    {"jgez", 0xC0},
-    {"jgz", 0xC7},
-    {"jlez", 0xC3},
-    {"jlz", 0xC2},
-    {"jnz", 0xC5},
-    {"jump", 0xC4},
-    {"jz", 0xC1},
+    {"cp_from_input", 0xb0},
+    {"cp_from_reg0", 0x80},
+    {"cp_from_reg1", 0x88},
+    {"cp_from_reg2", 0x90},
+    {"cp_from_reg3", 0x98},
+    {"cp_from_reg4", 0xa0},
+    {"cp_from_reg5", 0xa8},
+    {"immediate", 0x0},
+    {"jgez", 0xc0},
+    {"jgz", 0xc7},
+    {"jlez", 0xc3},
+    {"jlz", 0xc2},
+    {"jnz", 0xc5},
+    {"jump", 0xc4},
+    {"jz", 0xc1},
     {"nand", 0x41},
-    {"nop", 0xC0},
+    {"nop", 0xc0},
     {"nor", 0x42},
     {"or", 0x40},
     {"sub", 0x45}
-};*/
-
-Opcode opcodes_for_parser[] =
-{
-    {"add", 68},
-    {"and", 67},
-    {"cp_from_reg0", 128},
-    {"cp_from_reg1", 136},
-    {"cp_from_reg2", 144},
-    {"cp_from_reg3", 152},
-    {"cp_from_reg4", 160},
-    {"cp_from_reg5", 168},
-    {"immediate", 0},
-    {"jgez", 192},
-    {"jgz", 199},
-    {"jlez", 195},
-    {"jlz", 194},
-    {"jnz", 197},
-    {"jump", 196},
-    {"jz", 193},
-    {"nand", 65},
-    {"nop", 192},
-    {"nor", 66},
-    {"or", 64},
-    {"sub", 69}
 };
 
 static int instruction_stack[20];

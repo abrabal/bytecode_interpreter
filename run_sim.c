@@ -1,11 +1,17 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "vm.h"
 #include "code_parser.h"
 #include "helpers.h"
 
-static int log_flag = 0;
+#define INPUT_LENGTH sizeof(input)/sizeof(input[0]) 
+
+static int verbosity_flag = 0;
+
+static int input[] = {10, 20, 30, 40};
+static int input_pointer = 0;
 
 int main(int argc, char *argv[])
 {
@@ -15,23 +21,38 @@ int main(int argc, char *argv[])
     }
 
     if (argc < 3){
-        log_flag = NO_LOGS;
+        verbosity_flag = MUTE;
 
-    } else if (strcmp("--info", argv[1]) == 0){
-        log_flag = INFO;
+    } else if (strcmp("--verbose", argv[1]) == 0){
 
-    }else if (strcmp("--debug", argv[1]) == 0){
-        log_flag = DEBUG;
+        if (!(isdigit(*argv[2]))){
+            fprintf(stderr, "\nERROR: unexpected flag \"%s\"", argv[2]);
+            exit(1);
+        }
 
-    }else{
-        fprintf(stderr, "\nERROR: unexpected flag \"%s\"", argv[1]);
+        switch(atoi(argv[2])){
+            case MUTE:
+                verbosity_flag = MUTE;
+                break;
+            case MIN_VERBOSITY: 
+                verbosity_flag = MIN_VERBOSITY;
+                break;
+            case FULL_INFO:
+                verbosity_flag = FULL_INFO;
+                break;
+            default:
+                fprintf(stderr, "ERROR: unexpected value <%d>", atoi(argv[2]));
+                exit(1);
+        }
+    } else {
+        fprintf(stderr, "ERROR: unexpected flag \"%s\"", argv[1]);
         exit(1);
     }
 
     FILE *source_code = fopen(argv[(argc - 1)], "r");
 
     if(source_code == NULL){
-        fprintf(stderr, "\nERROR: source code file not found at path \"%s\"\n", argv[1]);
+        fprintf(stderr, "\nERROR: source code file not found at path \"%s\"\n", argv[(argc - 1)]);
         return 1;
     }
 
@@ -41,30 +62,40 @@ int main(int argc, char *argv[])
 
     fclose(source_code);
 
-    FILE *log_output = fopen("logs.txt", "w");
+    FILE *sim_info_output = fopen("sim_info.txt", "w");
 
     while(1){
-        if (sim_step->instruction_pointer == MAX_PROGRAM_LENGTH){
-            sim_step->instruction_pointer = 0;
-        }
-
         printf("\nto execute whole program press \"e\", to execute one instruction press \"s\", to exit press \"q\"\n");
         char c;
         scanf(" %c", &c);
 
         if (c == 's'){
-            if (log_flag != NO_LOGS){
-                sim_log(sim_step, log_output, log_flag);
+            if (verbosity_flag != MUTE){
+                sim_info(sim_step, sim_info_output, verbosity_flag, input[input_pointer]);
             }
-            sim_step = step(sim_step, sim_step);
+            sim_step = step(sim_step, sim_step, input[input_pointer]);
+
+            if(sim_step->input_mode == 1){
+                input_pointer += 1;
+                if ((size_t)input_pointer >= INPUT_LENGTH){
+                    input_pointer = 0;
+                }
+            }
         }
 
         if (c == 'e'){
             for (; sim_step->instruction_pointer < MAX_PROGRAM_LENGTH; ){
-                if (log_flag != NO_LOGS){
-                    sim_log(sim_step, log_output, log_flag);
+                if (verbosity_flag != MUTE){
+                    sim_info(sim_step, sim_info_output, verbosity_flag, input[input_pointer]);
                 }
-                sim_step = step(sim_step, sim_step);
+                sim_step = step(sim_step, sim_step, input[input_pointer]);
+                
+                if(sim_step->input_mode == 1){
+                    input_pointer += 1;
+                    if ((size_t)input_pointer >= INPUT_LENGTH){
+                        input_pointer = 0;
+                    }
+                }
             }
         }
 
@@ -73,7 +104,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    fclose(log_output);
+    fclose(sim_info_output);
     free_step(sim_step);
 
     return 0;
