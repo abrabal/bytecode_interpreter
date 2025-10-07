@@ -10,8 +10,9 @@
 
 static int verbosity_flag = 0;
 
-static int input[] = {10, 20, 30, 40};
+static int input[] = {0, 1};
 static int input_pointer = 0;
+static int test_res = -128;
 
 int main(int argc, char *argv[])
 {
@@ -30,22 +31,14 @@ int main(int argc, char *argv[])
             exit(1);
         }
 
-        switch(atoi(argv[2])){
-            case MUTE:
-                verbosity_flag = MUTE;
-                break;
-            case MIN_VERBOSITY: 
-                verbosity_flag = MIN_VERBOSITY;
-                break;
-            case FULL_INFO:
-                verbosity_flag = FULL_INFO;
-                break;
-            default:
-                fprintf(stderr, "ERROR: unexpected value <%d>", atoi(argv[2]));
-                exit(1);
+        verbosity_flag = atoi(argv[2]);
+
+        if (verbosity_flag < 0 || verbosity_flag > 2){
+            fprintf(stderr, "\n<%d> verbosity value is not exist", verbosity_flag);
+            exit(1);
         }
     } else {
-        fprintf(stderr, "ERROR: unexpected flag \"%s\"", argv[1]);
+        fprintf(stderr, "unexpected flag \"%s\"", argv[1]);
         exit(1);
     }
 
@@ -75,10 +68,11 @@ int main(int argc, char *argv[])
             }
             sim_step = step(sim_step, sim_step, input[input_pointer]);
 
-            if(sim_step->input_mode == 1){
-                input_pointer += 1;
-                if ((size_t)input_pointer >= INPUT_LENGTH){
-                    input_pointer = 0;
+            if (sim_step->output_mode == 1){
+                input_pointer = (sim_step->output[0] > test_res) ? 1 : 0;
+                if (sim_step->output[0] == test_res){
+                    printf("\ntest passed");
+                    exit(0);
                 }
             }
         }
@@ -89,13 +83,14 @@ int main(int argc, char *argv[])
                     sim_info(sim_step, sim_info_output, verbosity_flag, input[input_pointer]);
                 }
                 sim_step = step(sim_step, sim_step, input[input_pointer]);
-                
-                if(sim_step->input_mode == 1){
-                    input_pointer += 1;
-                    if ((size_t)input_pointer >= INPUT_LENGTH){
-                        input_pointer = 0;
+
+                if (sim_step->output_mode == 1){
+                    input_pointer = (sim_step->output[0] > test_res) ? 1 : 0;
+                    if (sim_step->output[0] == test_res){
+                        printf("\ntest passed\n");
+                        exit(0);
                     }
-                }
+            }
             }
         }
 

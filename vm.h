@@ -29,6 +29,7 @@ typedef struct SimStep {
     int instruction_pointer;
     int error_code;
     int input_mode;
+    int output_mode;
 
 } SimStep;
 

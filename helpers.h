@@ -20,7 +20,7 @@ static inline void sim_info(SimStep *sim_step, FILE *sim_info_output, int log_fl
 
     if (log_flag == FULL_INFO){
         fprintf(sim_info_output, "\n==================================================================");
-        fprintf(sim_info_output, "\ninstruction: <%d>", sim_step->state->program[instruction]);
+        fprintf(sim_info_output, "\ninstruction: <0x%x>", sim_step->state->program[instruction]);
         fprintf(sim_info_output, "\nregisters: <%d> <%d> <%d> <%d> <%d> <%d>", sim_step->state->registers[0], sim_step->state->registers[1], sim_step->state->registers[2], sim_step->state->registers[3], sim_step->state->registers[4], sim_step->state->registers[5]);
         fprintf(sim_info_output, "\ninput: <%d>", input);
         fprintf(sim_info_output, "\noutput: <%d>", sim_step->output[sim_step->out_pointer]);

@@ -22,6 +22,7 @@ SimStep *step(SimStep *sim_step, SimStep *next_step, int input)
     
     next_step->instruction_pointer += 1;
     next_step->input_mode = 0;
+    next_step->output_mode = 0;
 
     switch(instruction){
         case ADD:
@@ -124,6 +125,7 @@ SimStep *step(SimStep *sim_step, SimStep *next_step, int input)
         if (source == INPUT && dest == OUTPUT){
             next_step->output[sim_step->out_pointer] = input;
             next_step->input_mode = 1;
+            next_step->output_mode = 1;
             return next_step;
         }
         if (source == INPUT && dest < MAX_NUM_OF_REGISTERS){
@@ -133,6 +135,7 @@ SimStep *step(SimStep *sim_step, SimStep *next_step, int input)
         }
         if (source < MAX_NUM_OF_REGISTERS && dest == OUTPUT){
             next_step->output[sim_step->out_pointer] = sim_step->state->registers[source];
+            next_step->output_mode = 1;
             return next_step;
         }
 
@@ -174,6 +177,7 @@ SimStep *deep_copy(SimStep *copy_dest, SimStep *copy_source)
     copy_dest->instruction_pointer = copy_source->instruction_pointer;
     copy_dest->error_code = copy_source->error_code;
     copy_dest->input_mode = copy_source->input_mode;
+    copy_dest->output_mode = copy_source->output_mode;
 
     return copy_dest;
 }
@@ -200,6 +204,7 @@ SimStep *make_clear_step()
     new_clear_sim_step->output = output;
     new_clear_sim_step->error_code = 0;
     new_clear_sim_step->input_mode = 0;
+    new_clear_sim_step->output_mode = 0;
 
 
     return new_clear_sim_step;
