@@ -34,7 +34,7 @@ typedef struct SimStep {
 } SimStep;
 
 
-SimStep *step(SimStep *sim_step, SimStep *next_step, int input);
+SimStep *step(SimStep *sim_step, SimStep *next_step, char input);
 SimStep *deep_copy(SimStep *dest, SimStep *source);
 SimStep *make_clear_step();
 void free_step(SimStep *sim_step);

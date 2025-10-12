@@ -8,7 +8,7 @@
 
 int is_mode(int instruction, int mode);
 
-SimStep *step(SimStep *sim_step, SimStep *next_step, int input)
+SimStep *step(SimStep *sim_step, SimStep *next_step, char input)
 {
     if (sim_step->instruction_pointer >= MAX_PROGRAM_LENGTH){
         sim_step->instruction_pointer = 0;

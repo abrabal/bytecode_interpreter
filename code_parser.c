@@ -48,6 +48,13 @@ void compile_program(unsigned char *program, FILE *source_code, int max_program_
     int instruction_placement_pointer = 0;
     Label *label = NULL;
 
+    memset(hashtab, 0, sizeof(hashtab) * sizeof(Label *)/sizeof(hashtab[0]));
+
+    if(source_code == NULL){
+        fprintf(stderr, "\nERROR: fail to open source code file");
+        exit(1);
+    }
+
     while (1){
         int c = get_token(token_name, source_code);
 
@@ -263,7 +270,7 @@ int hash (char *str)
 Label *lookup(char *name)
 {
     Label *next_page;
-
+    
     for(next_page = hashtab[hash(name)]; next_page != NULL; next_page = next_page->next_page){
         if (strcmp(name, next_page->name) == 0){
             return next_page;

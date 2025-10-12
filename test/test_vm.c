@@ -2,7 +2,7 @@
 #include <string.h>
 #include "opcodes.h"
 #include "vm.h"
-#include "third_party/unity/unity.h"
+#include "unity.h"
 #include "helpers.h"
 
 void setUp(void)
