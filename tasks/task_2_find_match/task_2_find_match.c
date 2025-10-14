@@ -9,6 +9,9 @@
 
 #define INPUT_LENGTH sizeof(input)/sizeof(input[0]) 
 #define NUMBER_OF_STEPS_BEFORE_ABORTION 20000
+#define END_WITHOUT_INPUT_OUTPUT -1 
+#define END_ON_INPUT -2
+#define END_ON_OUTPUT -3
 
 static int verbosity_flag = 0;
 
@@ -16,6 +19,8 @@ static size_t step_num = 0;
 static SimStep *sim_step = NULL;
 static FILE *sim_info_output = NULL;
 static FILE *source_code = NULL;
+
+int run_till_IO(char input);
 
 void setUp(void)
 {
@@ -41,27 +46,26 @@ void test_1(void)
 
     fprintf(sim_info_output, "\n-------------test 1 init\n");
 
-    for (; sim_step->instruction_pointer < MAX_PROGRAM_LENGTH; ){
-        if (verbosity_flag != MUTE){
-            sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
-        }
+    int sim_exit_status = 0;
 
-        sim_step = step(sim_step, sim_step, input);
-        step_num += 1;  
+    while (1){
+        sim_exit_status = run_till_IO(input);
 
-        if(step_num > NUMBER_OF_STEPS_BEFORE_ABORTION){
-            fprintf(stderr, "ERROR: program fell into infinite loop, forced exit");
-            exit(1);
-        } 
+        if (sim_exit_status == END_ON_INPUT){
+            continue;
 
-        if(sim_step->output_mode == 1){                  
+        } else if (sim_exit_status == END_ON_OUTPUT){
             input = (sim_step->output[0] > valid_output) ? 1 : 0;
 
             if (sim_step->output[0] == valid_output){
                 output = sim_step->output[0];
                 sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
                 break;
-            }
+            } 
+        } else {
+            output = sim_step->output[0];
+            sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
+            break;
         }
     }
     TEST_ASSERT_EQUAL_MESSAGE(valid_output, output, "test_1 failed");
@@ -75,27 +79,26 @@ void test_2(void)
 
     fprintf(sim_info_output, "\n-------------test 2 init\n");
 
-    for (; sim_step->instruction_pointer < MAX_PROGRAM_LENGTH; ){
-        if (verbosity_flag != MUTE){
-            sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
-        }
+    int sim_exit_status = 0;
 
-        sim_step = step(sim_step, sim_step, input);
-        step_num += 1;   
+    while (1){
+        sim_exit_status = run_till_IO(input);
 
-        if(step_num > NUMBER_OF_STEPS_BEFORE_ABORTION){
-            fprintf(stderr, "ERROR: program fell into infinite loop, forced exit");
-            exit(1);
-        } 
+        if (sim_exit_status == END_ON_INPUT){
+            continue;
 
-        if(sim_step->output_mode == 1){                  
+        } else if (sim_exit_status == END_ON_OUTPUT){
             input = (sim_step->output[0] > valid_output) ? 1 : 0;
 
             if (sim_step->output[0] == valid_output){
                 output = sim_step->output[0];
                 sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
                 break;
-            }
+            } 
+        } else {
+            output = sim_step->output[0];
+            sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
+            break;
         }
     }
     TEST_ASSERT_EQUAL_MESSAGE(valid_output, output, "test_2 failed");
@@ -109,27 +112,26 @@ void test_3(void)
 
     fprintf(sim_info_output, "\n-------------test 3 init\n");
 
-    for (; sim_step->instruction_pointer < MAX_PROGRAM_LENGTH; ){
-        if (verbosity_flag != MUTE){
-            sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
-        }
+    int sim_exit_status = 0;
 
-        sim_step = step(sim_step, sim_step, input);
-        step_num += 1;   
+    while (1){
+        sim_exit_status = run_till_IO(input);
 
-        if(step_num > NUMBER_OF_STEPS_BEFORE_ABORTION){
-            fprintf(stderr, "ERROR: program fell into infinite loop, forced exit");
-            exit(1);
-        } 
+        if (sim_exit_status == END_ON_INPUT){
+            continue;
 
-        if(sim_step->output_mode == 1){                  
+        } else if (sim_exit_status == END_ON_OUTPUT){
             input = (sim_step->output[0] > valid_output) ? 1 : 0;
 
             if (sim_step->output[0] == valid_output){
                 output = sim_step->output[0];
                 sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
                 break;
-            }
+            } 
+        } else {
+            output = sim_step->output[0];
+            sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
+            break;
         }
     }
     TEST_ASSERT_EQUAL_MESSAGE(valid_output, output, "test_3 failed");
@@ -182,4 +184,31 @@ int main(int argc, char *argv[])
 
     return UNITY_END();
     
+}
+
+int run_till_IO(char input)
+{
+    for (; sim_step->instruction_pointer < MAX_PROGRAM_LENGTH; ){
+        if (verbosity_flag != MUTE){
+            sim_info(sim_step, sim_info_output, verbosity_flag, input, step_num);
+        }
+
+        sim_step = step(sim_step, sim_step, input);
+        step_num += 1;   
+
+        if(step_num > NUMBER_OF_STEPS_BEFORE_ABORTION){
+            fprintf(stderr, "ERROR: program fell into infinite loop, forced exit");
+            exit(1);
+        } 
+
+        if(sim_step->output_mode == 1){                  
+            return END_ON_OUTPUT;
+        }
+
+        if(sim_step->input_mode == 1){                  
+            return END_ON_INPUT;
+        }
+    }
+
+    return END_WITHOUT_INPUT_OUTPUT;
 }
