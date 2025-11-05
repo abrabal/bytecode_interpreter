@@ -1,0 +1,28 @@
+add
+and
+
+    to copy value from one register to another, or to output use one of the commands bellow + constant(0 - 6)
+    e.g "cp_from_input + 3" - move from input to 3 register.
+    0 - 5 used for registers and 6 for output
+    
+cp_from_input - move from input
+cp_from_reg0 - move from 0 register
+cp_from_reg1 - move from 1 register
+cp_from_reg2 - move from 2 register
+cp_from_reg3 - move from 3 register
+cp_from_reg4 - move from 4 register
+cp_from_reg5 - move from 5 register
+
+immediate
+jgez
+jgz
+jlez
+jlz
+jnz
+jump
+jz
+nand
+nop
+nor
+or
+sub
