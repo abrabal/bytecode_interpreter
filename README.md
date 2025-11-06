@@ -8,6 +8,8 @@ The available commands are listed in the `assembly_commands.txt`
 
 # Architecture overview
 
+![](assets/Example.png)
+
 current CPU architecture includes the following core components:
 - **Registers:** 6 registers, numbered **0–5**.
 - **ROM:** 256 bytes of program memory, storing one byte per instruction step.
@@ -23,16 +25,40 @@ current CPU architecture includes the following core components:
 
 Each instruction is fetched and executed in **single-byte steps**, making the system simple and predictable for low-level experimentation.
 
+# Examples 
+
+The `sandbox` folder contains two example programs that demonstrate basic CPU operations.
+
+### Example 1
+
+To run the first example, execute:
+```bash
+bin/sandbox.elf --verbose 2 sandbox/sandbox_code_example.asm
+```
+After running this command, press `e` to execute.
+This program pushes the value **63** into registers **R1** and **R2**, then **adds** them and **sends the result to the output**.
+Execution logs will be saved to `sim_info.txt`.
+
+### Example 2
+
+To run the second example, execute:
+```bash
+bin/sandbox.elf --verbose 2 sandbox/example_2.asm
+```
+After running this command, press `e` to execute.
+This program pushes **63** into register **R1**, **23** into register **R2**, then **subtracts 23 from 63 and sends the result to the output**.
+Execution logs will be saved to `sim_info.txt`.
+
 # How to use
 
-## 1. Compile the project
+ ### 1. Compile the project
 
 Run:
 
 ```bash
 make
 ```
-## 2. Choose verbosity level
+ ### 2. Choose verbosity level
 
 When executing your program, you can use the `--verbose` flag to control the amount of information printed during execution:
 - `0` (or no flag): run silently
@@ -40,11 +66,11 @@ When executing your program, you can use the `--verbose` flag to control the amo
 - `2`: show full information
 
 *All output files will be created in the same folder after your program finishes running.*
-## 3. Write and run programs
+### 3. Write and run programs
 
 You have two main options:
 
-### a)Completing Tasks
+**a)Completing Tasks**
 
 - Navigate to the `tasks` folder.
 - Pick an interesting task and read its description in the `todo` file.
@@ -59,7 +85,7 @@ bin/tasks/task_name.elf --verbose 0-2 path_to_your_asm_file
 bin/tasks/task_1_add_five.elf --verbose 1 tasks/task_1_add_five/solution.asm
 ```
 
-### b)Sandbox Mode
+**b)Sandbox Mode**
 - In the ``sandbox`` folder, create an ``.asm`` file with any name.
 - Write your custom code there.
 - Run it with the sandbox executable:
