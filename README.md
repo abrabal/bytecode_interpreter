@@ -1,4 +1,4 @@
-# About project
+# About the project
 
 This project simulates a simple **8-bit CPU architecture** from the game Turing Complete.
 You can learn more about the game [here](https://store.steampowered.com/app/1444480/Turing_Complete/).
@@ -25,29 +25,21 @@ current CPU architecture includes the following core components:
 
 Each instruction is fetched and executed in **single-byte steps**, making the system simple and predictable for low-level experimentation.
 
-# Examples 
-
-The `sandbox` folder contains two example programs that demonstrate basic CPU operations.
-
-### Example 1
-
-To run the first example, execute:
-```bash
-bin/sandbox.elf --verbose 2 sandbox/sandbox_code_example.asm
+# Example
+```assembler
+immediate + 63;        // Load 63 into R0
+cp_from_reg0 + 1;      // Copy 63 from R0 to R1
+immediate + 23;        // Load 23 into R0
+cp_from_reg0 + 2;      // Copy 23 from R0 to R2
+sub;                   // Subtract R2 from R1 (63 - 23) and store the result in R3
+cp_from_reg3 + 6;      // Send the value from R3 (40) to output
 ```
-After running this command, press `e` to execute.
-This program pushes the value **63** into registers **R1** and **R2**, then **adds** them and **sends the result to the output**.
-Execution logs will be saved to `sim_info.txt`.
-
-### Example 2
-
-To run the second example, execute:
+Run program with
 ```bash
 bin/sandbox.elf --verbose 2 sandbox/example_2.asm
 ```
-After running this command, press `e` to execute.
-This program pushes **63** into register **R1**, **23** into register **R2**, then **subtracts 23 from 63 and sends the result to the output**.
-Execution logs will be saved to `sim_info.txt`.
+The output will be `40`.
+- The `--verbose` flag and its usage are described in the **How to Use** section below.
 
 # How to use
 
@@ -98,8 +90,9 @@ bin/sandbox.elf --verbose 1 sandbox/sandbox_code_example.asm
 ```
 ## Important rule for using Input/Output 
 
-I/O operations **cannot be used in the sandbox**.
-They are only available inside **tasks**, where they behave either according to the **general rule** or as specified in the task’s ``todo`` file.
+- reading from **Input** inside sandbox mode will **always** give you `0`.
+- Loading to **Output** inside sandbox mode will **print value in console**.
+- Inside **tasks**, **I/O** operations behave either according to the **general rule** or as specified in the task’s ``todo`` file.
 
 ### General Rule
 

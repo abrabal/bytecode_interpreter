@@ -61,8 +61,13 @@ int main(int argc, char *argv[])
             if (verbosity_flag != MUTE){
                 sim_info(sim_step, sim_info_output, verbosity_flag, 0, step_num);
             }
+
+            if(sim_step->output_mode == 1){
+                    fprintf(stdout, "\n>>>%d\n", sim_step->output[0]);
+            }
+            
             sim_step = step(sim_step, sim_step, 0);
-            step_num += 1;
+            step_num += 1;  
         }
 
         if (c == 'e'){
@@ -70,8 +75,13 @@ int main(int argc, char *argv[])
                 if (verbosity_flag != MUTE){
                     sim_info(sim_step, sim_info_output, verbosity_flag, 0, step_num);
                 }
+
+                if(sim_step->output_mode == 1){
+                    fprintf(stdout, "\n>>>%d\n", sim_step->output[0]);
+                } 
+
                 sim_step = step(sim_step, sim_step, 0);
-                step_num += 1;  
+                step_num += 1; 
             }
         }
 
