@@ -26,6 +26,7 @@ current CPU architecture includes the following core components:
 Each instruction is fetched and executed in **single-byte steps**, making the system simple and predictable for low-level experimentation.
 
 # Example
+listing of assembler for a simple program that substracts 23 from 63
 ```assembler
 immediate + 63;        // Load 63 into R0
 cp_from_reg0 + 1;      // Copy 63 from R0 to R1
@@ -34,11 +35,11 @@ cp_from_reg0 + 2;      // Copy 23 from R0 to R2
 sub;                   // Subtract R2 from R1 (63 - 23) and store the result in R3
 cp_from_reg3 + 6;      // Send the value from R3 (40) to output
 ```
-Run program with
+Runing the following with 
 ```bash
 bin/sandbox.elf --verbose 2 sandbox/example_2.asm
 ```
-The output will be `40`.
+this will print `40` in console(`stdout`)
 - The `--verbose` flag and its usage are described in the **How to Use** section below.
 
 # How to use
