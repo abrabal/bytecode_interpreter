@@ -2,9 +2,8 @@
 #include <string.h>
 #include "opcodes.h"
 #include "vm.h"
-#include "third_party/unity/unity.h"
+#include "unity.h"
 #include "helpers.h"
-#include "errors.h"
 
 void setUp(void)
 {
@@ -23,7 +22,7 @@ void test_immediate_instruction_1(void)
 
     sim_step->state->program[0] = IMMEDIATE(25);
 
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[0];
     free_step(sim_step);
@@ -38,7 +37,7 @@ void test_immediate_instruction_2(void)
 
     sim_step->state->program[0] = IMMEDIATE(15);
 
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[0];
 
@@ -54,7 +53,7 @@ void test_immediate_instruction_3(void)
 
     sim_step->state->program[0] = IMMEDIATE(63);
 
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[0];
 
@@ -71,8 +70,8 @@ void test_copy_instruction_1(void)
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(0, 1);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[1];
     free_step(sim_step);
@@ -88,8 +87,8 @@ void test_copy_instruction_2(void)
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(0, 2);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[2];
     free_step(sim_step);
@@ -105,8 +104,8 @@ void test_copy_instruction_3(void)
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(0, 3);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[3];
     free_step(sim_step);
@@ -122,8 +121,8 @@ void test_copy_instruction_4(void)
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(0, 4);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[4];
     free_step(sim_step);
@@ -139,8 +138,8 @@ void test_copy_instruction_5(void)
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(0, 5);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[5];
     free_step(sim_step);
@@ -156,8 +155,8 @@ void test_copy_instruction_6(void)
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(0, OUTPUT);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->output[0];
     free_step(sim_step);
@@ -169,13 +168,11 @@ void test_copy_instruction_7(void)
 {
     SimStep *sim_step = make_clear_step();
     
-
-    sim_step->input[0] = 33;
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(INPUT, 0);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->state->registers[0];
     free_step(sim_step);
@@ -187,13 +184,11 @@ void test_copy_instruction_8(void)
 {
     SimStep *sim_step = make_clear_step();
     
-
-    sim_step->input[0] = 33;
     sim_step->state->program[0] = IMMEDIATE(10);
     sim_step->state->program[1] = MOV(INPUT, OUTPUT);
 
-    sim_step = step(sim_step, sim_step);
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->output[0];
     free_step(sim_step);
@@ -213,7 +208,7 @@ void test_or_instruction(void)
     sim_step->state->program[4] = OR;
 
     for(int i = 0; i < 5; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }
 
     int test_value = sim_step->state->registers[3];
@@ -234,7 +229,7 @@ void test_nand_instruction(void)
     sim_step->state->program[4] = NAND;
 
     for(int i = 0; i < 5; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }
 
     int test_value = sim_step->state->registers[3];
@@ -255,7 +250,7 @@ void test_nor_instruction(void)
     sim_step->state->program[4] = NOR;
 
     for(int i = 0; i < 5; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }
 
     int test_value = sim_step->state->registers[3];
@@ -276,7 +271,7 @@ void test_and_instruction(void)
     sim_step->state->program[4] = AND;
 
     for(int i = 0; i < 5; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }
 
     int test_value = sim_step->state->registers[3];
@@ -297,7 +292,7 @@ void test_add_instruction(void)
     sim_step->state->program[4] = ADD;
 
     for(int i = 0; i < 5; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }
 
     int test_value = sim_step->state->registers[3];
@@ -318,7 +313,7 @@ void test_sub_instruction(void)
     sim_step->state->program[4] = SUB;
 
     for(int i = 0; i < 5; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }
 
     int test_value = sim_step->state->registers[3];
@@ -340,7 +335,7 @@ void test_nop_instruction(void)
     sim_step->state->program[5] = IMMEDIATE(0);
 
     for(int i = 0; i < 6; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }
 
     int test_value = sim_step->state->registers[0];
@@ -363,7 +358,7 @@ void test_jz_instruction_1(void)
     sim_step->state->program[6] = IMMEDIATE(0);
 
     for(int i = 0; i < 7; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }  
 
     int test_value = sim_step->state->registers[0];
@@ -386,7 +381,7 @@ void test_jz_instruction_2(void)
     sim_step->state->program[6] = IMMEDIATE(0);
 
     for(int i = 0; i < 7; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -410,7 +405,7 @@ void test_jlz_instruction_1(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -434,7 +429,7 @@ void test_jlz_instruction_2(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -458,7 +453,7 @@ void test_jlez_instruction_1(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -482,7 +477,7 @@ void test_jlez_instruction_2(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -506,7 +501,7 @@ void test_jlez_instruction_3(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -528,7 +523,7 @@ void test_jump_instruction(void)
     sim_step->state->program[5] = IMMEDIATE(0);
 
     for(int i = 0; i < 6; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -551,7 +546,7 @@ void test_jnz_instruction_1(void)
     sim_step->state->program[6] = IMMEDIATE(0);
 
     for(int i = 0; i < 7; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -574,7 +569,7 @@ void test_jnz_instruction_2(void)
     sim_step->state->program[6] = IMMEDIATE(0);
 
     for(int i = 0; i < 7; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -598,7 +593,7 @@ void test_jgez_instruction_1(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -622,7 +617,7 @@ void test_jgez_instruction_2(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -647,7 +642,7 @@ void test_jgez_instruction_3(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -671,7 +666,7 @@ void test_jgz_instruction_1(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -696,7 +691,7 @@ void test_jgz_instruction_2(void)
     sim_step->state->program[7] = IMMEDIATE(0);
 
     for(int i = 0; i < 8; i++){
-        sim_step = step(sim_step, sim_step);
+        sim_step = step(sim_step, sim_step, 33);
     }   
 
     int test_value = sim_step->state->registers[0];
@@ -712,7 +707,7 @@ void test_error_invalid_instruction(void)
 
     sim_step->state->program[0] = 70;
 
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->error_code;
     free_step(sim_step);
@@ -727,7 +722,7 @@ void test_error_out_of_range(void)
 
     sim_step->state->program[0] = 191;
 
-    sim_step = step(sim_step, sim_step);
+    sim_step = step(sim_step, sim_step, 33);
 
     int test_value = sim_step->error_code;
     free_step(sim_step);

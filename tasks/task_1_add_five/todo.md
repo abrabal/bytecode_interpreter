@@ -1,0 +1,1 @@
+write a program that accepts number from input, add 5 to it and push it to output.

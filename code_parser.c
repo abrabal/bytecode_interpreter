@@ -10,20 +10,27 @@
 
 #define NUM_OF_OPCODES sizeof(opcodes_for_parser)/sizeof(Opcode)
 
-static Opcode opcodes_for_parser[] =
+Opcode opcodes_for_parser[] =
 {
     {"add", 0x44},
     {"and", 0x43},
-    {"immediate", 0x00},
-    {"jgez", 0xC0},
-    {"jgz", 0xC7},
-    {"jlez", 0xC3},
-    {"jlz", 0xC2},
-    {"jnz", 0xC5},
-    {"jump", 0xC4},
-    {"jz", 0xC1},
+    {"cp_from_input", 0xb0},
+    {"cp_from_reg0", 0x80},
+    {"cp_from_reg1", 0x88},
+    {"cp_from_reg2", 0x90},
+    {"cp_from_reg3", 0x98},
+    {"cp_from_reg4", 0xa0},
+    {"cp_from_reg5", 0xa8},
+    {"immediate", 0x0},
+    {"jgez", 0xc0},
+    {"jgz", 0xc7},
+    {"jlez", 0xc3},
+    {"jlz", 0xc2},
+    {"jnz", 0xc5},
+    {"jump", 0xc4},
+    {"jz", 0xc1},
     {"nand", 0x41},
-    {"nop", 0xC0},
+    {"nop", 0xc0},
     {"nor", 0x42},
     {"or", 0x40},
     {"sub", 0x45}
@@ -40,6 +47,13 @@ void compile_program(unsigned char *program, FILE *source_code, int max_program_
     char operation_flag = 0;
     int instruction_placement_pointer = 0;
     Label *label = NULL;
+
+    memset(hashtab, 0, sizeof(hashtab) * sizeof(Label *)/sizeof(hashtab[0]));
+
+    if(source_code == NULL){
+        fprintf(stderr, "\nERROR: fail to open source code file");
+        exit(1);
+    }
 
     while (1){
         int c = get_token(token_name, source_code);
@@ -245,7 +259,7 @@ int compare_opcodes(const void *p1, const void *p2)
 
 int hash (char *str)
 {
-    int hashval = 0;
+    unsigned int hashval = 0;
 
     for (; *str != '\0'; str++){
         hashval = *str + 31 * hashval;
@@ -256,7 +270,7 @@ int hash (char *str)
 Label *lookup(char *name)
 {
     Label *next_page;
-
+    
     for(next_page = hashtab[hash(name)]; next_page != NULL; next_page = next_page->next_page){
         if (strcmp(name, next_page->name) == 0){
             return next_page;
